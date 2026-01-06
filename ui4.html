@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Store Platform</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ===== GLOBAL ===== */
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #6A85B6, #BAC8E0);
+    color: #1F2937;
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    background: #1E1E1E;
+    color: #fff;
+    padding: 30px 0;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #333;
+}
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 20px;
+    font-weight: 600;
+}
+.menu-item {
+    padding: 15px 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+    color: #ccc;
+}
+.menu-item:hover { background: #333; color: #fff; }
+.menu-item.active { background: #4C6EF5; color: #fff; }
+
+/* ===== CONTENT ===== */
+.content { 
+    flex: 1; 
+    padding: 40px; 
+    overflow-y:auto; 
+    position: relative; 
+}
+
+/* ===== PROFILE ICON ===== */
+.profile-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    position: absolute;
+    top: 15px;
+    right: 25px;
+}
+
+/* ===== PROFILE DROPDOWN ===== */
+.dropdown {
+    position: absolute;
+    top: 70px;
+    right: 25px;
+    width: 180px;
+    background: #1F1F1F;
+    border-radius: 10px;
+    display: none;
+    color: white;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+}
+.dropdown div {
+    padding: 12px;
+    border-bottom: 1px solid #333;
+    cursor: pointer;
+}
+.dropdown div:hover {
+    background: #333;
+}
+
+/* Card */
+.card {
+    background: #FFFFFFDD;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    margin-bottom: 25px;
+}
+
+/* Carousel */
+.carousel { width: 100%; overflow: hidden; border-radius: 12px; }
+.carousel-track { display: flex; animation: slide 12s infinite linear; }
+.carousel img { width: 200px; height: 120px; object-fit: cover; margin-right: 15px; border-radius: 10px; }
+
+@keyframes slide { 
+    0% { transform: translateX(0); } 
+    100% { transform: translateX(-50%); } 
+}
+
+/* Input */
+.input-box {
+    padding: 12px 15px;
+    width: 100%;
+    max-width: 350px;
+    border-radius: 10px;
+    border: 1px solid #E5E7EB;
+    font-size: 15px;
+    margin-bottom:10px;
+    outline:none;
+}
+.input-box:focus { border-color: #3B82F6; }
+
+/* Button */
+button.btn {
+    padding: 10px 18px;
+    background: linear-gradient(90deg,#00c6ff,#0072ff);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* Table */
+.table-box {
+    width: 100%;
+    border-collapse: collapse;
+}
+.table-box th, .table-box td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #ddd;
+}
+.table-box th {
+    background: #4C6EF5;
+    color: white;
+    text-align: left;
+}
+
+/* Scan Page Centering */
+.scan-container {
+    text-align: center;
+    margin-top: 40px;
+}
+.scan-container img {
+    width: 220px;
+    margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2>Smart Store</h2>
+    <div class="menu-item active" onclick="showPage('home')">Home</div>
+    <div class="menu-item" onclick="showPage('search')">Search Store</div>
+    <div class="menu-item" onclick="showPage('visited')">Visited Stores</div>
+    <div class="menu-item" onclick="showPage('bills')">Previous Bills</div>
+</div>
+
+<!-- Content -->
+<div class="content">
+
+<!-- PROFILE ICON -->
+<img src="https://imgs.search.brave.com/FdjtFwR1z9q8EeyZdTShE5cB-XW2uIYKTn-jV6Yy3bA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTMw/MDg0NTYyMC92ZWN0/b3IvdXNlci1pY29u/LWZsYXQtaXNvbGF0/ZWQtb24td2hpdGUt/YmFja2dyb3VuZC11/c2VyLXN5bWJvbC12/ZWN0b3ItaWxsdXN0/cmF0aW9uLmpwZz9z/PTYxMng2MTImdz0w/Jms9MjAmYz15QmV5/YmEwaFVraDE0X2pn/djFPS3FJSDBDQ1NX/VV80Y2tSa0FveTJw/NzNvPQ" 
+     class="profile-icon"
+     onclick="toggleDropdown()">
+
+<!-- DROPDOWN -->
+<div id="profileMenu" class="dropdown">
+    <div>Manage Account</div>
+    <div>Notifications</div>
+    <div>Settings</div>
+    <div>Help & Feedback</div>
+    <div>Logout</div>
+</div>
+
+<!-- HOME PAGE -->
+<div id="home" class="page">
+<h1>Home</h1>
+<div class="card">
+<h2>Popular Stores</h2>
+
+<div class="carousel">
+    <div class="carousel-track">
+
+        <img src="https://cdn.brandfetch.io/idbOaCAw5z/w/945/h/945/theme/dark/icon.jpeg" alt="Zudio">
+        <img src="https://www.infinitimall.com/wp-content/uploads/2022/04/West-Side-Logo-Infinti-Mall-e1649837374905.jpg" alt="Westside">
+        <img src="https://cdn.prod.website-files.com/6275656636a26a21829a7036/670818afc932f9cd90588789_Reliance%20Trends%20Logo.png" alt="Trends">
+        <img src="https://1000logos.net/wp-content/uploads/2017/02/HM-Logo-500x313.png" alt="H&M">
+
+        <img src="https://cdn.brandfetch.io/idbOaCAw5z/w/945/h/945/theme/dark/icon.jpeg" alt="Zudio">
+        <img src="https://www.infinitimall.com/wp-content/uploads/2022/04/West-Side-Logo-Infinti-Mall-e1649837374905.jpg" alt="Westside">
+        <img src="https://cdn.prod.website-files.com/6275656636a26a21829a7036/670818afc932f9cd90588789_Reliance%20Trends%20Logo.png" alt="Trends">
+        <img src="https://1000logos.net/wp-content/uploads/2017/02/HM-Logo-500x313.png" alt="H&M">
+
+    </div>
+</div>
+
+</div>
+</div>
+
+<!-- SEARCH PAGE -->
+<div id="search" class="page" style="display:none;">
+<h1>Search Store</h1>
+<div class="card">
+<input type="text" id="searchInput" class="input-box" placeholder="Enter store name..." oninput="showEnterButton()">
+<div id="enterStoreBox"></div>
+</div>
+</div>
+
+<!-- NEW — SCAN PAGE -->
+<div id="scan" class="page" style="display:none;">
+<h1>Scan Item Code</h1>
+
+<div class="scan-container">
+    <img src="https://imgs.search.brave.com/oYWOcK9Dm2GqGZYQLfzJcP1lLaIvc0lBqt5BTL2weGY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/dmVjdG9yc3RvY2su/Y29tL2kvNTAwcC8z/NC84OS9xci1jb2Rl/LWljb24tYmxhY2st/c2Nhbi1sb2dvLWJh/cmNvZGUtdmVjdG9y/LTQwNzQzNDg5Lmpw/Zw" />
+</div>
+
+</div>
+
+<!-- VISITED STORES -->
+<div id="visited" class="page" style="display:none;">
+<h1>Visited Stores</h1>
+<div class="card">
+<table class="table-box">
+<thead>
+<tr>
+<th>Store</th>
+<th>Location</th>
+<th>Date</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zudio</td>
+<td>C21 Mall</td>
+<td>25 December 2025</td>
+</tr>
+<tr>
+<td>Westside</td>
+<td>LIG</td>
+<td>8 November 2025</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- BILLS -->
+<div id="bills" class="page" style="display:none;">
+<h1>Previous Bills</h1>
+<div class="card">
+<p>No previous bills available.</p>
+</div>
+</div>
+
+</div>
+
+<script>
+
+// PAGE SWITCHING
+function showPage(pageName){
+    document.querySelectorAll('.page').forEach(p => p.style.display='none');
+    document.getElementById(pageName).style.display='block';
+    document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+
+    if (event.target.classList.contains("menu-item")) {
+        event.target.classList.add('active');
+    }
+}
+
+// SHOW ENTER STORE BUTTON
+function showEnterButton(){
+    const input = document.getElementById("searchInput").value.trim();
+    const box = document.getElementById("enterStoreBox");
+
+    if(input.length > 0){
+        box.innerHTML = `<button class="btn" onclick="goToScan()">Enter Store</button>`;
+    } else {
+        box.innerHTML = "";
+    }
+}
+
+// GO TO SCAN PAGE
+function goToScan(){
+    showPage('scan');
+}
+
+// PROFILE DROPDOWN
+function toggleDropdown(){
+    const menu = document.getElementById("profileMenu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+</script>
+
+</body>
+</html>
