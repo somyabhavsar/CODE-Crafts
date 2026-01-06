@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swift Store Platform</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ===== GLOBAL ===== */
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #6A85B6, #BAC8E0);
+    color: #1F2937;
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    background: #1E1E1E;
+    color: #fff;
+    padding: 30px 0;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #333;
+}
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 20px;
+    font-weight: 600;
+}
+.menu-item {
+    padding: 15px 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+    color: #ccc;
+}
+.menu-item:hover { background: #333; color: #fff; }
+.menu-item.active { background: #4C6EF5; color: #fff; }
+
+/* ===== CONTENT ===== */
+.content { 
+    flex: 1; 
+    padding: 40px; 
+    overflow-y:auto; 
+    position: relative; 
+}
+
+/* ===== PROFILE ICON ===== */
+.profile-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    position: absolute;
+    top: 15px;
+    right: 25px;
+}
+
+/* ===== PROFILE DROPDOWN ===== */
+.dropdown {
+    position: absolute;
+    top: 70px;
+    right: 25px;
+    width: 180px;
+    background: #1F1F1F;
+    border-radius: 10px;
+    display: none;
+    color: white;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+}
+.dropdown div {
+    padding: 12px;
+    border-bottom: 1px solid #333;
+    cursor: pointer;
+}
+.dropdown div:hover {
+    background: #333;
+}
+
+/* Card */
+.card {
+    background: #FFFFFFDD;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    margin-bottom: 25px;
+}
+
+/* Carousel */
+.carousel { width: 100%; overflow: hidden; border-radius: 12px; }
+.carousel-track { display: flex; animation: slide 12s infinite linear; }
+.carousel img { width: 200px; height: 120px; object-fit: cover; margin-right: 15px; border-radius: 10px; }
+
+@keyframes slide { 
+    0% { transform: translateX(0); } 
+    100% { transform: translateX(-50%); } 
+}
+
+/* Input */
+.input-box {
+    padding: 12px 15px;
+    width: 100%;
+    max-width: 350px;
+    border-radius: 10px;
+    border: 1px solid #E5E7EB;
+    font-size: 15px;
+    margin-bottom:10px;
+    outline:none;
+}
+.input-box:focus { border-color: #3B82F6; }
+
+/* Button */
+button.btn {
+    padding: 10px 18px;
+    background: linear-gradient(90deg,#00c6ff,#0072ff);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* Table */
+.table-box {
+    width: 100%;
+    border-collapse: collapse;
+}
+.table-box th, .table-box td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #ddd;
+}
+.table-box th {
+    background: #4C6EF5;
+    color: white;
+    text-align: left;
+}
+
+/* Scan Page Centering */
+.scan-container {
+    text-align: center;
+    margin-top: 40px;
+}
+.scan-container img {
+    width: 220px;
+    margin-top: 20px;
+}
+
+/* Bill Page Styling */
+.bill-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+.bill-header {
+    text-align: center;
+    border-bottom: 2px solid #4C6EF5;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+.bill-header h2 {
+    margin: 0;
+    color: #4C6EF5;
+}
+.bill-info {
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+.bill-info p {
+    margin: 5px 0;
+}
+.bill-qr {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px dashed #ddd;
+}
+.bill-qr img {
+    width: 240px;
+    height: 240px;
+}
+.bill-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #666;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2>Swift Store</h2>
+    <div class="menu-item active" onclick="showPage('home')">Home</div>
+    <div class="menu-item" onclick="showPage('search')">Search Store</div>
+    <div class="menu-item" onclick="showPage('cart')">Cart</div>
+    <div class="menu-item" onclick="showPage('visited')">Visited Stores</div>
+    <div class="menu-item" onclick="showPage('bills')">Previous Bills</div>
+    <div class="menu-item" onclick="showPage('bill')">Bill</div>
+</div>
+
+<!-- Content -->
+<div class="content">
+
+<!-- PROFILE ICON -->
+<img src="https://imgs.search.brave.com/FdjtFwR1z9q8EeyZdTShE5cB-XW2uIYKTn-jV6Yy3bA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTMw/MDg0NTYyMC92ZWN0/b3IvdXNlci1pY29u/LWZsYXQtaXNvbGF0/ZWQtb24td2hpdGUt/YmFja2dyb3VuZC11/c2VyLXN5bWJvbC12/ZWN0b3ItaWxsdXN0/cmF0aW9uLmpwZz9z/PTYxMng2MTImdz0w/Jms9MjAmYz15QmV5/YmEwaFVraDE0X2pn/djFPS3FJSDBDQ1NX/VV80Y2tSa0FveTJw/NzNvPQ" 
+     class="profile-icon"
+     onclick="toggleDropdown()">
+
+<!-- DROPDOWN -->
+<div id="profileMenu" class="dropdown">
+    <div>Manage Account</div>
+    <div>Notifications</div>
+    <div>Settings</div>
+    <div>Help & Feedback</div>
+    <div>Logout</div>
+</div>
+
+<!-- HOME PAGE -->
+<div id="home" class="page">
+<h1>Home</h1>
+<div class="card">
+<h2>Popular Stores</h2>
+
+<div class="carousel">
+    <div class="carousel-track">
+
+        <img src="https://cdn.brandfetch.io/idbOaCAw5z/w/945/h/945/theme/dark/icon.jpeg" alt="Zudio">
+        <img src="https://www.infinitimall.com/wp-content/uploads/2022/04/West-Side-Logo-Infinti-Mall-e1649837374905.jpg" alt="Westside">
+        <img src="https://cdn.prod.website-files.com/6275656636a26a21829a7036/670818afc932f9cd90588789_Reliance%20Trends%20Logo.png" alt="Trends">
+        <img src="https://1000logos.net/wp-content/uploads/2017/02/HM-Logo-500x313.png" alt="H&M">
+
+        <img src="https://cdn.brandfetch.io/idbOaCAw5z/w/945/h/945/theme/dark/icon.jpeg" alt="Zudio">
+        <img src="https://www.infinitimall.com/wp-content/uploads/2022/04/West-Side-Logo-Infinti-Mall-e1649837374905.jpg" alt="Westside">
+        <img src="https://cdn.prod.website-files.com/6275656636a26a21829a7036/670818afc932f9cd90588789_Reliance%20Trends%20Logo.png" alt="Trends">
+        <img src="https://1000logos.net/wp-content/uploads/2017/02/HM-Logo-500x313.png" alt="H&M">
+
+    </div>
+</div>
+
+</div>
+</div>
+
+<!-- SEARCH PAGE -->
+<div id="search" class="page" style="display:none;">
+<h1>Search Store</h1>
+<div class="card">
+<input type="text" id="searchInput" class="input-box" placeholder="Enter store name..." oninput="showEnterButton()">
+<div id="enterStoreBox"></div>
+</div>
+</div>
+
+<!-- CART PAGE -->
+<div id="cart" class="page" style="display:none;">
+<h1>Shopping Cart</h1>
+<div class="card">
+<table class="table-box">
+<thead>
+<tr>
+<th>Item</th>
+<th>Price</th>
+<th>Quantity</th>
+<th>Total</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="cartItems">
+<tr>
+<td colspan="5" style="text-align:center; color:#999;">Your cart is empty</td>
+</tr>
+</tbody>
+</table>
+<div style="margin-top:20px; text-align:right;">
+<h3>Total: ₹<span id="cartTotal">0</span></h3>
+<button class="btn" onclick="generateBill()">Generate Bill</button>
+</div>
+</div>
+</div>
+
+<!-- NEW — SCAN PAGE -->
+<div id="scan" class="page" style="display:none;">
+<h1>Scan Item Code</h1>
+
+<div class="scan-container">
+    <img src="https://imgs.search.brave.com/oYWOcK9Dm2GqGZYQLfzJcP1lLaIvc0lBqt5BTL2weGY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/dmVjdG9yc3RvY2su/Y29tL2kvNTAwcC8z/NC84OS9xci1jb2Rl/LWljb24tYmxhY2st/c2Nhbi1sb2dvLWJh/cmNvZGUtdmVjdG9y/LTQwNzQzNDg5Lmpw/Zw" />
+</div>
+
+</div>
+
+<!-- VISITED STORES -->
+<div id="visited" class="page" style="display:none;">
+<h1>Visited Stores</h1>
+<div class="card">
+<table class="table-box">
+<thead>
+<tr>
+<th>Store</th>
+<th>Location</th>
+<th>Date</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zudio</td>
+<td>C21 Mall</td>
+<td>25 December 2025</td>
+</tr>
+<tr>
+<td>Westside</td>
+<td>LIG</td>
+<td>8 November 2025</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- BILLS -->
+<div id="bills" class="page" style="display:none;">
+<h1>Previous Bills</h1>
+<div class="card">
+<p>No previous bills available.</p>
+</div>
+</div>
+
+<!-- GENERATED BILL PAGE -->
+<div id="bill" class="page" style="display:none;">
+<h1>Generated Bill</h1>
+<div class="bill-container">
+    <div class="bill-header">
+        <h2>SWIFT STORE</h2>
+        <p>Your Shopping Partner</p>
+    </div>
+    
+    <div class="bill-info">
+        <p><strong>Bill No:</strong> <span id="billNo">SS-2025-001</span></p>
+        <p><strong>Date:</strong> <span id="billDate">06 January 2026</span></p>
+        <p><strong>Time:</strong> <span id="billTime">14:30 PM</span></p>
+        <p><strong>Customer ID:</strong> <span id="customerId">CUST-12345</span></p>
+        <p><strong>Customer Name:</strong> <span id="customerName">Gaurav Patil</span></p>
+        <p><strong>Cashier:</strong> John Doe</p>
+    </div>
+    
+    <table class="table-box">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody id="billItems">
+        </tbody>
+    </table>
+    
+    <div style="text-align:right; margin-top:20px; font-size:18px;">
+        <strong>Grand Total: ₹<span id="billTotal">0</span></strong>
+    </div>
+    
+    <div class="bill-qr">
+        <p><strong>Scan for Digital Receipt</strong></p>
+        <img src="https://www.gs1us.org/content/dam/gs1us/images/landing-pages/2d-barcodes/qr-code-2d%402x.png" alt="QR Code">
+    </div>
+    
+    <div class="bill-footer">
+        <p>Thank you for shopping with us!</p>
+        <p>Visit again soon</p>
+    </div>
+</div>
+</div>
+
+</div>
+
+<script>
+
+// PAGE SWITCHING
+function showPage(pageName){
+    document.querySelectorAll('.page').forEach(p => p.style.display='none');
+    document.getElementById(pageName).style.display='block';
+    document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+
+    if (event.target.classList.contains("menu-item")) {
+        event.target.classList.add('active');
+    }
+}
+
+// SHOW ENTER STORE BUTTON
+function showEnterButton(){
+    const input = document.getElementById("searchInput").value.trim();
+    const box = document.getElementById("enterStoreBox");
+
+    if(input.length > 0){
+        box.innerHTML = `<button class="btn" onclick="goToScan()">Enter Store</button>`;
+    } else {
+        box.innerHTML = "";
+    }
+}
+
+// GO TO SCAN PAGE
+function goToScan(){
+    showPage('scan');
+}
+
+// PROFILE DROPDOWN
+function toggleDropdown(){
+    const menu = document.getElementById("profileMenu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+// CART FUNCTIONS
+let cart = [
+    {item: "Jeans", price: 700, quantity: 1},
+    {item: "T-Shirt", price: 500, quantity: 2}
+];
+
+// Initialize cart display on page load
+window.onload = function(){
+    updateCart();
+}
+
+function addToCart(item, price){
+    const existing = cart.find(i => i.item === item);
+    if(existing){
+        existing.quantity++;
+    } else {
+        cart.push({item, price, quantity: 1});
+    }
+    updateCart();
+}
+
+function removeFromCart(item){
+    cart = cart.filter(i => i.item !== item);
+    updateCart();
+}
+
+function updateCart(){
+    const tbody = document.getElementById("cartItems");
+    const totalEl = document.getElementById("cartTotal");
+    
+    if(cart.length === 0){
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#999;">Your cart is empty</td></tr>';
+        totalEl.textContent = "0";
+        return;
+    }
+    
+    let html = "";
+    let total = 0;
+    
+    cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        html += `
+            <tr>
+                <td>${item.item}</td>
+                <td>₹${item.price}</td>
+                <td>${item.quantity}</td>
+                <td>₹${itemTotal}</td>
+                <td><button class="btn" style="background:#ef4444; margin:0;" onclick="removeFromCart('${item.item}')">Remove</button></td>
+            </tr>
+        `;
+    });
+    
+    tbody.innerHTML = html;
+    totalEl.textContent = total;
+}
+
+function generateBill(){
+    if(cart.length === 0){
+        alert("Your cart is empty!");
+        return;
+    }
+    
+    // Populate bill items
+    const billItemsBody = document.getElementById("billItems");
+    let html = "";
+    let total = 0;
+    
+    cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        html += `
+            <tr>
+                <td>${item.item}</td>
+                <td>₹${item.price}</td>
+                <td>${item.quantity}</td>
+                <td>₹${itemTotal}</td>
+            </tr>
+        `;
+    });
+    
+    billItemsBody.innerHTML = html;
+    document.getElementById("billTotal").textContent = total;
+    
+    // Generate bill number and current date/time
+    const now = new Date();
+    const billNo = "SS-2025-" + String(Math.floor(Math.random() * 9000) + 1000);
+    const billDate = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    const billTime = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    
+    document.getElementById("billNo").textContent = billNo;
+    document.getElementById("billDate").textContent = billDate;
+    document.getElementById("billTime").textContent = billTime;
+    document.getElementById("customerId").textContent = "CUST-12345";
+    document.getElementById("customerName").textContent = "Gaurav Patil";
+    
+    // Clear cart and show bill page
+    cart = [];
+    updateCart();
+    showPage('bill');
+}
+
+</script>
+
+</body>
+</html>
